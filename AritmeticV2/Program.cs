@@ -8,8 +8,11 @@ namespace AritmeticV2
 {
     class Program
     {
+        Coder coder;
         static void Main(string[] args)
         {
+            Coder coder = new Coder();
+            coder.Encode("test.txt", 256);
         }
     }
 }

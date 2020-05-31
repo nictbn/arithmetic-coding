@@ -8,13 +8,13 @@ namespace AritmeticV2
 {
     class Model
     {
-        int no_of_chars;
-        int eof_symbol;
-        int no_of_symbols;
-        int[] char_to_index;
-        int[] index_to_char;
-        int[] cumulative_frequencies;
-        int[] frequencies;
+        public int no_of_chars;
+        public int eof_symbol;
+        public int no_of_symbols;
+        public int[] char_to_index;
+        public int[] index_to_char;
+        public int[] cumulative_frequencies;
+        public int[] frequencies;
         
         public Model(int numberOfCharacters)
         {
