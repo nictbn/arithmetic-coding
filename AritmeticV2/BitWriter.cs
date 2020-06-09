@@ -12,18 +12,16 @@ namespace BitReaderWriter
         byte writeBuffer;
         long writtenBitsCounter;
         FileStream fileStream;
-        BinaryWriter writer;
+        // BinaryWriter writer;
 
         public BitWriter(string filePath)
         {
             fileStream = new FileStream(filePath, FileMode.Create);
-            writer = new BinaryWriter(fileStream);
             writtenBitsCounter = 0;
         }
 
         public void closeFile()
         {
-            writer.Dispose();
             fileStream.Dispose();
         }
 
@@ -35,7 +33,7 @@ namespace BitReaderWriter
             writtenBitsCounter++;
             if (writtenBitsCounter % 8 == 0)
             {
-                writer.Write(writeBuffer);
+                fileStream.WriteByte(writeBuffer);
                 writeBuffer = 0;
             }
         }

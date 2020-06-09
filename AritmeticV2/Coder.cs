@@ -12,9 +12,9 @@ namespace AritmeticV2
     class Coder
     {
         const uint TOP_VALUE = 0xFFFFFFFF;
-        const uint FIRST_QTR = TOP_VALUE / 4 + 1;
-        const uint HALF = 2 * FIRST_QTR;
-        const uint THIRD_QTR = 3 * FIRST_QTR;
+        const uint FIRST_QTR = 1u << 30;
+        const uint HALF = 1u << 31;
+        const uint THIRD_QTR = HALF | FIRST_QTR;
         BitWriter writer;
         FileStream reader;
         Model model;
@@ -41,7 +41,7 @@ namespace AritmeticV2
                 }
                 symbol = model.char_to_index[ch];
                 encode_symbol(symbol, model.cumulative_frequencies);
-                update_model(symbol);
+                model.update_model(symbol);
             }
             encode_symbol(model.eof_symbol, model.cumulative_frequencies);
             done_encoding();
@@ -53,7 +53,7 @@ namespace AritmeticV2
         {
             writer.writeNBits(0, 7);
             writer.closeFile();
-            reader.Dispose();
+            reader.Close();
         }
 
         private void done_encoding()
@@ -69,16 +69,13 @@ namespace AritmeticV2
             }
         }
 
-        private void update_model(int symbol)
-        {
-        }
-
         private void encode_symbol(int symbol, int[] cumulative_frequencies)
         {
             ulong range;
-            range = (ulong)(high - low) - 1;
+            range = (ulong)(high - low) + 1;
             high = (uint)(low + (range * (ulong)cumulative_frequencies[symbol - 1]) / (ulong)cumulative_frequencies[0] - 1);
             low = (uint)(low + (range * (ulong)cumulative_frequencies[symbol]) / (ulong)cumulative_frequencies[0]);
+            int loop_index = 0;
             for (; ; )
             {
                 if (high < HALF)
@@ -92,7 +89,7 @@ namespace AritmeticV2
                     high -= HALF;
                 }
                 else if (low >= FIRST_QTR && high < THIRD_QTR)
-                {        /* later if in middle half. */
+                {
                     bits_to_follow += 1;
                     low -= FIRST_QTR;
                     high -= FIRST_QTR;
@@ -100,6 +97,7 @@ namespace AritmeticV2
                 else break;
                 low = 2 * low;
                 high = 2 * high + 1;
+                loop_index++;
             }
         }
 
@@ -121,7 +119,7 @@ namespace AritmeticV2
 
         private void start_encoding()
         {
-            low = 0;
+            low = 0u;
             high = TOP_VALUE;
             bits_to_follow = 0;
         }

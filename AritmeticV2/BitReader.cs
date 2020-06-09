@@ -12,18 +12,16 @@ namespace BitReaderWriter
         byte readBuffer;
         long readBitsCounter;
         FileStream fileStream;
-        BinaryReader reader;
+        // BinaryReader reader;
 
         public BitReader(string filePath)
         {
             fileStream = new FileStream(filePath, FileMode.Open);
-            reader = new BinaryReader(fileStream);
             readBitsCounter = 0;
         }
 
         public void closeFile()
         {
-            reader.Dispose();
             fileStream.Dispose();
         }
 
@@ -31,7 +29,7 @@ namespace BitReaderWriter
         {
             if(readBitsCounter % 8 == 0)
             {
-                readBuffer = reader.ReadByte();
+                readBuffer = (byte)fileStream.ReadByte();
             }
             int position = 7 - (int)(readBitsCounter % 8);
             int mask = 1 << position;
