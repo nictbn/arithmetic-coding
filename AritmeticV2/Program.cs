@@ -15,14 +15,17 @@ namespace AritmeticV2
             string path = Console.ReadLine();
             if (!File.Exists(path))
             {
-                Console.WriteLine("Fisierul nu exista!");
+                Console.WriteLine("The file does not exist!");
                 Console.Read();
                 return;
             }
+            Console.WriteLine("Encoding Start");
             Coder coder = new Coder();
             coder.Encode(path, 256);
+            Console.WriteLine("Decoding Start");
             Decoder decoder = new Decoder();
             decoder.Decode(path + ".arith", 256);
+            Console.WriteLine("Finished processing");
         }
     }
 }
